@@ -23,7 +23,6 @@ jobs:
       with:
         major_patter: "major:"
         minor_pattern: "feat:"
-        format: "${major}.${minor}.${patch}-prerelease${increment}"
       id: version
             
     - name: Docker login
@@ -35,9 +34,13 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "New versioning: $NEW_VERSION"
 
-    # - name: Build docker image
-    #   run: docker build -t martinfernandodiaz/docker-graphql:0.0.2 .
+    - name: Build docker image
+      env:
+        NEW_VERSION: "${major}.${minor}.${patch}"
+      run: docker build -t martinfernandodiaz/docker-graphql:$NEW_VERSION .
 
     
-    # - name: Push docker image
-    #   run: docker push martinfernandodiaz/docker-graphql:0.0.2
+    - name: Push docker image
+      env:
+        NEW_VERSION: "${major}.${minor}.${patch}"
+      run: docker push martinfernandodiaz/docker-graphql:$NEW_VERSION
